@@ -2,14 +2,12 @@ version: '3'
 services:
   ipplan:
     image: cent7-ipplan:latest
-    container_name: ipplan-beta
+    container_name: ipplan.sambokit.local
+    hostname: ipplan
+    domainname: sambokit.local
     network_mode: bridge
     ports:
-      - 8082:80
-    environment:
-      - DB_IPPLAN_HOST=172.22.2.10
-      - DB_IPPLAN_USER=user_ipplan
-      - DB_IPPLAN_NAME=db_ipplan
-      - DB_IPPLAN_PASSWORD=P@ssw0rd#1
+      - 8081:80
+    restart: always
     volumes:
-      - ./ipplan:/var/www/html/
+      - /srv/docker-data/ipplan.sambokit.local:/var/www/html

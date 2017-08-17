@@ -1,4 +1,4 @@
-## Modified by Sam KUON - 01/08/17
+## Modified by Sam KUON - 17/08/2017
 FROM centos:latest
 MAINTAINER Sam KUON "sam.kuonssp@gmail.com"
 
@@ -18,10 +18,15 @@ RUN yum -y update && \
         php56u-mysqlnd \
         php56u-ldap \
         php56u-cli \
+	php56u-gmp \
         httpd \
 	unzip \
+        mod_ldap \
 	wget &&\
     yum clean all
+
+# Set PHP Timezone
+RUN sed -i '890idate.timezone = "Asia/Phnom_Penh"' /etc/php.ini
 
 # Download IPPlan version 4.92b
 RUN cd /usr/src/ && \
@@ -31,6 +36,12 @@ RUN cd /usr/src/ && \
     mkdir /var/spool/ipplanuploads && \
     mkdir /tmp/{dns,dhcp} && \
     chown -R apache.apache /var/spool/ipplanuploads /tmp/{dns,dhcp}
+
+# Allow user access for IPPlan authentication
+RUN echo $'<Directory /var/www/html/user>\n\
+AllowOverride All\n\
+</Directory>\n'\
+>> /etc/httpd/conf/httpd.conf
 
 # Copy run-httpd script to image
 ADD ./conf.d/run-httpd.sh /run-httpd.sh
